@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12874A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mio">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Mio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪴</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F8E4; --surface:#FFFFFF; --surface-2:#EDF3D8; --ink:#16301E; --muted:#5C6E58; --line:#DCE6C2;
+  --green:#12874A; --leaf:#3FB15E; --lime:#C4E34A; --sun:#FFC81F; --sun-ink:#8A6200;
+  --terra:#D0542A; --water:#0F9A60; --on-green:#FFFFFF;
+  --green-soft:#DCF2DF; --water-soft:#FFF2BF; --sun-soft:#FFF2BF; --terra-soft:#FCE3D8;
+  --banner:linear-gradient(135deg,#0F7A42 0%,#3FB15E 55%,#C4E34A 100%);
+  --shadow:0 1px 2px rgba(22,48,30,.06),0 8px 24px rgba(22,48,30,.08);
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F170F; --surface:#172216; --surface-2:#203020; --ink:#EEF4E2; --muted:#9DB196; --line:#2A3B28;
+    --green:#5DD38B; --leaf:#78DB7E; --lime:#C4E34A; --sun:#FFD54D; --sun-ink:#FFD54D;
+    --terra:#F28A5C; --water:#5DD38B; --on-green:#0C1F12;
+    --green-soft:#1A3322; --water-soft:#2F2A10; --sun-soft:#2F2A10; --terra-soft:#3A2218;
+    --banner:linear-gradient(135deg,#0B5530 0%,#25803F 55%,#7C9A1F 100%);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F170F; --surface:#172216; --surface-2:#203020; --ink:#EEF4E2; --muted:#9DB196; --line:#2A3B28;
+  --green:#5DD38B; --leaf:#78DB7E; --lime:#C4E34A; --sun:#FFD54D; --sun-ink:#FFD54D;
+  --terra:#F28A5C; --water:#5DD38B; --on-green:#0C1F12;
+  --green-soft:#1A3322; --water-soft:#2F2A10; --sun-soft:#2F2A10; --terra-soft:#3A2218;
+  --banner:linear-gradient(135deg,#0B5530 0%,#25803F 55%,#7C9A1F 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{max-width:560px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}
+.top{position:relative;overflow:hidden;background:var(--banner);border-radius:26px;padding:22px 18px;margin-bottom:16px;display:flex;align-items:center;gap:16px;color:#fff;box-shadow:var(--shadow)}
+.top::before,.top::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none}
+.top::before{width:180px;height:180px;right:-50px;top:-70px}
+.top::after{width:110px;height:110px;right:70px;bottom:-60px;background:rgba(255,213,77,.25)}
+.avatar{position:relative;flex:none;width:92px;height:92px;border-radius:50%;padding:0;border:4px solid var(--sun);background:#E8F5D0;box-shadow:0 4px 14px rgba(0,0,0,.18);display:grid;place-items:center;overflow:visible}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.avatar svg{width:56px;height:56px;color:#12874A}
+.avatar .cam{position:absolute;right:-4px;bottom:-2px;width:30px;height:30px;border-radius:50%;background:var(--sun);display:grid;place-items:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.who{position:relative;min-width:0;flex:1;padding-right:30px}
+.who h1{font-family:var(--display);font-weight:600;font-size:34px;line-height:1;margin:0;letter-spacing:-.01em}
+.sub{margin:6px 0 0;font-size:13px;opacity:.92}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.chip.sun{background:var(--sun);color:#3D2C00}
+.icon-btn{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.2);display:grid;place-items:center;color:#fff;z-index:1}
+.icon-btn svg{width:19px;height:19px}
+.pick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.pick button{aspect-ratio:1;border-radius:50%;overflow:hidden;border:3px solid transparent;padding:0;background:var(--surface-2)}
+.pick button img{width:100%;height:100%;object-fit:cover}
+.pick button:hover{border-color:var(--sun)}
+.banner{background:var(--terra-soft);color:var(--ink);border:1px solid var(--terra);border-radius:14px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+.tab{display:none}
+.tab.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
+.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:11px;font-weight:600;color:var(--muted);margin:0 0 6px}
+h2{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.2;margin:0 0 6px}
+h3{font-family:var(--display);font-weight:600;font-size:19px;margin:0 0 8px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.hero{display:flex;gap:18px;align-items:center}
+.ring{position:relative;width:124px;height:124px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .num{font-family:var(--display);font-size:38px;font-weight:600;line-height:1}
+.ring .unit{font-size:12px;color:var(--muted);margin-top:2px}
+.hero-text{min-width:0}
+.hero-text p{margin:0;font-size:14px}
+.k-ok{--k:var(--leaf);--kt:var(--green)} .k-soon{--k:var(--sun);--kt:var(--sun-ink)} .k-today{--k:var(--sun);--kt:var(--sun-ink)} .k-late{--k:var(--terra);--kt:var(--terra)}
+.hero h2{color:var(--kt)}
+.bubble{display:flex;gap:12px;align-items:flex-start;background:var(--sun-soft);border-radius:18px;padding:14px 16px;margin-bottom:14px}
+.bubble .who{font-family:var(--display);font-weight:600;color:var(--green);flex:none}
+.bubble p{margin:0;font-size:15px}
+.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:600;background:var(--surface-2);transition:transform .1s ease,filter .15s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--green);color:var(--on-green)}
+.btn.water{background:linear-gradient(135deg,var(--green),var(--leaf));color:var(--on-green);box-shadow:0 6px 16px rgba(18,135,74,.28)}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.btn.danger{background:var(--terra-soft);color:var(--terra)}
+.btn.big{width:100%;padding:16px;font-size:17px;border-radius:16px}
+.links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:10px}
+.link{background:none;border:0;padding:4px 0;color:var(--green);font-weight:500;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.tip{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--water-soft);font-size:14px}
+.tip strong{color:var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.stat .label{font-size:12px;color:var(--muted);font-weight:500}
+.stat .value{font-family:var(--display);font-size:22px;font-weight:600;line-height:1.25;margin-top:2px}
+.stat .hint{font-size:12px;color:var(--muted)}
+.section-title{font-family:var(--display);font-size:18px;font-weight:600;margin:22px 4px 10px}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.action{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;font-weight:500}
+.action .e{font-size:24px;line-height:1}
+.season{border-left:4px solid var(--sun)}
+.first .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+input[type=date],input[type=number],input[type=text],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
+.first input{flex:1;min-width:160px;width:auto}
+textarea{min-height:90px;resize:vertical}
+label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin:0 0 12px}
+label > input,label > select,label > textarea{margin-top:6px;color:var(--ink);font-size:16px}
+.suffix{display:flex;align-items:center;gap:8px}
+.suffix span{color:var(--muted)}
+/* journal */
+.timeline{list-style:none;margin:0;padding:0}
+.ev{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ev:last-child{border-bottom:0}
+.ev .ico{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--surface-2);font-size:18px}
+.ev .body{flex:1;min-width:0}
+.ev .t{font-weight:600;font-size:15px}
+.ev .d{font-size:12px;color:var(--muted)}
+.ev .x{font-size:14px;margin-top:2px;overflow-wrap:anywhere}
+.ev .thumb{margin-top:8px;width:84px;height:84px;object-fit:cover;border-radius:10px;cursor:pointer;background:var(--surface-2)}
+.del{background:none;border:0;color:var(--muted);font-size:18px;padding:4px 6px;align-self:flex-start;opacity:.6}
+.del:hover{opacity:1;color:var(--terra)}
+.chart svg{width:100%;height:auto;display:block}
+/* photos */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ph{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--surface-2);border:0;padding:0}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph span{position:absolute;left:6px;bottom:6px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.45);padding:2px 7px;border-radius:999px}
+.empty{text-align:center;padding:28px 12px;color:var(--muted)}
+.empty .e{font-size:40px}
+/* fiche */
+.fiche h3{display:flex;align-items:center;gap:8px}
+.fiche p,.fiche li{font-size:15px}
+.fiche ul{padding-left:18px;margin:6px 0 0}
+.fiche li{margin-bottom:8px}
+.fiche p{margin:0 0 8px}
+/* nav */
+.bottom{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:10}
+.bottom .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.nav{background:none;border:0;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:500;color:var(--muted);border-radius:12px}
+.nav .e{font-size:20px;line-height:1.2;filter:grayscale(1);opacity:.7}
+.nav.active{color:var(--green)}
+.nav.active .e{filter:none;opacity:1}
+/* sheet */
+.sheet-wrap{position:fixed;inset:0;background:rgba(10,15,12,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;opacity:0;transition:opacity .2s}
+.sheet-wrap.open{opacity:1}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;transform:translateY(24px);transition:transform .2s}
+.sheet-wrap.open .sheet{transform:none}
+.sheet-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.sheet-actions .btn{flex:1}
+.stack{display:flex;flex-direction:column;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+/* lightbox */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:12px}
+.lb img{max-width:100%;max-height:72vh;border-radius:12px}
+.lb .cap{color:#eee;font-size:14px;text-align:center}
+.lb .row{display:flex;gap:10px}
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:999px;font-size:14px;display:flex;gap:14px;align-items:center;opacity:0;pointer-events:none;transition:all .2s;z-index:40;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
+.toast button{background:none;border:0;color:var(--green-soft);font-weight:600;text-decoration:underline;padding:0}
+@media (max-width:380px){.hero{flex-direction:column;text-align:center}.ring{width:112px;height:112px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button class="avatar" id="avatarBtn" aria-label="Changer la photo de profil de Mio">
+      <img id="avatarImg" alt="Photo de profil de Mio" hidden>
+      <svg id="avatarLeaf" viewBox="0 0 48 48" aria-hidden="true">
+        <g fill="currentColor">
+          <ellipse cx="24" cy="14" rx="4" ry="10.5" transform="rotate(-64 24 26)"/>
+          <ellipse cx="24" cy="14" rx="4" ry="10.5" transform="rotate(-32 24 26)"/>
+          <ellipse cx="24" cy="14" rx="4" ry="10.5"/>
+          <ellipse cx="24" cy="14" rx="4" ry="10.5" transform="rotate(32 24 26)"/>
+          <ellipse cx="24" cy="14" rx="4" ry="10.5" transform="rotate(64 24 26)"/>
+        </g>
+        <path d="M24 26 C23 33 25 38 24 45" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="cam" aria-hidden="true">📷</span>
+    </button>
+    <div class="who">
+      <h1>Mio</h1>
+      <p class="sub" id="sub">Pachira aquatica</p>
+      <div class="chips" id="chips"></div>
+    </div>
+    <button class="icon-btn" id="btnSettings" aria-label="Réglages">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <main>
+    <section id="tab-today" class="tab active"></section>
+    <section id="tab-journal" class="tab"></section>
+    <section id="tab-photos" class="tab"></section>
+    <section id="tab-fiche" class="tab fiche">
+      <div class="card">
+        <p class="eyebrow">Sa fiche</p>
+        <h2>Pachira aquatica</h2>
+        <p class="muted">On l'appelle aussi châtaignier de Guyane ou « arbre à argent ». Il vient des zones humides d'Amérique centrale et du Sud, où il pousse au bord de l'eau.</p>
+      </div>
+      <div class="card">
+        <h3>🏡 Son installation</h3>
+        <ul>
+          <li>Pot en terre cuite, un peu plus grand depuis le rempotage du printemps 2026. La terre cuite respire et sèche plus vite que le plastique : en été, vérifie la terre plus souvent.</li>
+          <li>Billes d'argile au fond pour le drainage, et une coupelle dessous.</li>
+          <li>Près de la fenêtre, avec une lampe horticole.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>☀️ Lumière</h3>
+        <p>Beaucoup de lumière, mais pas de soleil brûlant derrière la vitre en plein été.</p>
+        <p>En hiver, la lampe horticole est une vraie alliée : 10 à 12 heures par jour. Tourne le pot d'un quart de tour chaque semaine pour qu'il pousse droit.</p>
+      </div>
+      <div class="card">
+        <h3>💧 Arrosage</h3>
+        <p>Le pachira garde de l'eau dans son tronc. Il supporte bien mieux d'avoir un peu soif que d'avoir les pieds mouillés.</p>
+        <ul>
+          <li><strong>Automne et hiver :</strong> tous les 20 à 21 jours, ton rythme habituel.</li>
+          <li><strong>Printemps et été :</strong> plus souvent, environ tous les 7 à 10 jours selon la chaleur.</li>
+          <li>Toujours : arrose quand les 3 premiers centimètres de terre sont secs, et vide la coupelle s'il reste de l'eau au bout de 30 minutes.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🌱 Engrais</h3>
+        <p>Une fois par mois, d'avril à septembre. Rien en automne ni en hiver : il est au repos et ne peut pas l'utiliser, ça finit par abîmer les racines.</p>
+      </div>
+      <div class="card">
+        <h3>🌡️ Température et air</h3>
+        <p>Idéal entre 18 et 25 °C, jamais en dessous de 12 °C. Loin des radiateurs (l'air sec lui brunit le bout des feuilles) et des courants d'air froids quand tu ouvres la fenêtre en hiver.</p>
+      </div>
+      <div class="card">
+        <h3>🔎 Ce que ses feuilles te disent</h3>
+        <ul>
+          <li><strong>Jaunes et molles :</strong> trop d'eau. Espace les arrosages. Si le tronc devient mou, c'est urgent : il faut regarder les racines.</li>
+          <li><strong>Bouts bruns et secs :</strong> air trop sec ou coup de chaud. Éloigne-le du radiateur. Un bol d'eau posé à côté aide un peu.</li>
+          <li><strong>Qui tombent d'un coup :</strong> changement de place ou courant d'air froid. Il s'en remet, mais ne le déplace plus.</li>
+          <li><strong>Pâles, tiges qui s'étirent :</strong> manque de lumière.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🔥 Après la canicule</h3>
+        <p>Coupe les feuilles entièrement grillées à leur base, avec un ciseau propre. N'ajoute pas d'engrais pour compenser : il se refait une santé tranquillement et repartira au printemps.</p>
+      </div>
+      <div class="card">
+        <h3>📏 Sa taille</h3>
+        <p>De 40 cm à 1,20 m en un peu plus d'un an, c'est une très belle croissance : tu t'en occupes bien.</p>
+        <p>S'il devient trop grand, on peut le tailler au printemps : couper le haut de la tige le fait se ramifier et devenir plus touffu. Prochain rempotage dans 2 ans environ, au printemps, ou plus tôt si des racines sortent par le trou du pot.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom" aria-label="Navigation">
+  <div class="in">
+    <button class="nav active" data-tab="today"><span class="e">🪴</span>Aujourd'hui</button>
+    <button class="nav" data-tab="journal"><span class="e">📖</span>Journal</button>
+    <button class="nav" data-tab="photos"><span class="e">📷</span>Photos</button>
+    <button class="nav" data-tab="fiche"><span class="e">🌿</span>Sa fiche</button>
+  </div>
+</nav>
+
+<div id="sheet" class="sheet-wrap" hidden><div class="sheet" id="sheetBody" role="dialog" aria-modal="true"></div></div>
+<div id="lightbox" class="lb" hidden>
+  <img id="lbImg" alt="Photo de Mio">
+  <div class="cap" id="lbCap"></div>
+  <div class="row">
+    <button class="btn ghost" id="lbClose" style="color:#fff;border-color:#555">Fermer</button>
+    <button class="btn" id="lbAvatar" style="background:var(--sun);color:#3D2C00">✨ Photo de profil</button>
+    <button class="btn danger" id="lbDel">Supprimer</button>
+  </div>
+</div>
+<div id="toast" class="toast" role="status"></div>
+<input type="file" id="photoInput" accept="image/*" multiple hidden>
+<input type="file" id="importInput" accept="application/json,.json" hidden>
+<input type="file" id="avatarInput" accept="image/*" hidden>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- outils ---------- */
+const KEY = 'mio-v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const parse = s => { const p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
+const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const diffDays = (a, b) => Math.round((b - a) / 864e5);
+const plural = (n, w) => n + ' ' + w + (Math.abs(n) > 1 ? 's' : '');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const MONTHS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+function fmtDay(d){ const o = {day:'numeric', month:'long'}; if (d.getFullYear() !== today().getFullYear()) o.year = 'numeric'; return d.toLocaleDateString('fr-FR', o); }
+function fmtWeekday(d){ return d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'}); }
+function monthsBetween(a, b){ let m = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth()); if (b.getDate() < a.getDate()) m--; return Math.max(0, m); }
+function fmtDuration(m){
+  const y = Math.floor(m / 12), r = m % 12;
+  if (!y) return plural(r, 'mois').replace('moiss', 'mois');
+  return plural(y, 'an') + (r ? ' et ' + r + ' mois' : '');
+}
+
+/* ---------- données ---------- */
+const TYPES = {
+  water:   {label:'Arrosage',        icon:'💧', bg:'var(--water-soft)'},
+  fert:    {label:'Engrais',         icon:'🌱', bg:'var(--green-soft)'},
+  measure: {label:'Mesure',          icon:'📏', bg:'var(--surface-2)'},
+  repot:   {label:'Rempotage',       icon:'🪴', bg:'var(--terra-soft)'},
+  note:    {label:'Note',            icon:'📝', bg:'var(--surface-2)'},
+  photo:   {label:'Photo',           icon:'📷', bg:'var(--surface-2)'},
+  arrival: {label:'Arrivée de Mio',  icon:'🏡', bg:'var(--green-soft)'},
+  lamp:    {label:'Lampe horticole', icon:'💡', bg:'var(--surface-2)'},
+  stress:  {label:'Coup de chaud',   icon:'🌡️', bg:'var(--terra-soft)'}
+};
+
+function defaults(){
+  const e = (type, date, extra) => Object.assign({id: uid(), type, date, created: 0}, extra);
+  return {
+    version: 1,
+    plant: {name:'Mio', species:'Pachira aquatica', since:'2025-09-15'},
+    settings: {restInterval:21, growInterval:10, fertInterval:30, growStart:4, growEnd:9},
+    events: [
+      e('arrival', '2025-09-15', {approxLabel:'septembre 2025', text:"Acheté dans son pot d'origine."}),
+      e('measure', '2025-09-15', {approxLabel:'septembre 2025', value:40, text:'Taille à son arrivée, environ.'}),
+      e('lamp',    '2025-10-01', {approxLabel:'automne 2025', text:'Installation de sa lampe horticole.'}),
+      e('note',    '2025-10-02', {approxLabel:'sept. 2025 → mars 2026', text:'Repos d’automne et d’hiver : arrosage tous les 20 à 21 jours.'}),
+      e('repot',   '2026-04-15', {approxLabel:'printemps 2026', text:"Pot en terre cuite un peu plus grand, plus de terre, billes d'argile au fond, coupelle."}),
+      e('fert',    '2026-04-20', {approxLabel:'printemps 2026', text:"Début de l'engrais, une fois par mois."}),
+      e('stress',  '2026-07-15', {approxLabel:'été 2026', text:'A souffert de la canicule.'}),
+      e('measure', '2026-11-05', {value:120, text:'Environ 1,20 m. Il a triplé de taille !'})
+    ]
+  };
+}
+
+function storageWorks(){ try { const k = '__mio_test'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; } catch(e){ return false; } }
+const canStore = storageWorks();
+let state = null;
+if (canStore) { try { const raw = localStorage.getItem(KEY); if (raw) state = JSON.parse(raw); } catch(e){ state = null; } }
+if (!state || !Array.isArray(state.events)) state = defaults();
+state.settings = Object.assign(defaults().settings, state.settings || {});
+state.plant = Object.assign(defaults().plant, state.plant || {});
+
+function save(){
+  if (!canStore) return;
+  try { localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch(e){ toast("Je n'arrive pas à enregistrer. Le stockage est peut-être plein."); }
+}
+
+/* ---------- photos (IndexedDB) ---------- */
+const memPhotos = new Map();
+let dbPromise = null;
+function db(){
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((res, rej) => {
+    try {
+      const r = indexedDB.open('mio', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('photos', {keyPath:'id'});
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    } catch(e){ rej(e); }
+  });
+  return dbPromise;
+}
+function tx(mode, fn){
+  return db().then(d => new Promise((res, rej) => {
+    const t = d.transaction('photos', mode); const st = t.objectStore('photos');
+    const out = fn(st);
+    t.oncomplete = () => res(out && out.result !== undefined ? out.result : undefined);
+    t.onerror = () => rej(t.error);
+  }));
+}
+async function putPhoto(p){ try { await tx('readwrite', st => st.put(p)); } catch(e){ memPhotos.set(p.id, p); } }
+async function delPhoto(id){ memPhotos.delete(id); try { await tx('readwrite', st => st.delete(id)); } catch(e){} }
+async function getPhoto(id){ if (memPhotos.has(id)) return memPhotos.get(id); try { return await tx('readonly', st => st.get(id)); } catch(e){ return null; } }
+async function allPhotos(){ let list = []; try { list = await tx('readonly', st => st.getAll()) || []; } catch(e){} return list.concat([...memPhotos.values()]); }
+async function clearPhotos(){ memPhotos.clear(); try { await tx('readwrite', st => st.clear()); } catch(e){} }
+
+function compress(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = () => {
+      const max = 1400, s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('image illisible')); };
+    img.src = url;
+  });
+}
+
+/* ---------- logique plante ---------- */
+function isGrowing(d){
+  d = d || today(); const m = d.getMonth() + 1; const a = state.settings.growStart, b = state.settings.growEnd;
+  return a <= b ? (m >= a && m <= b) : (m >= a || m <= b);
+}
+function interval(){ return isGrowing() ? state.settings.growInterval : state.settings.restInterval; }
+function sorted(){ return state.events.slice().sort((a, b) => b.date.localeCompare(a.date) || (b.created || 0) - (a.created || 0)); }
+function lastOf(type){ return sorted().find(e => e.type === type) || null; }
+function measures(){ return state.events.filter(e => e.type === 'measure' && e.value).sort((a, b) => a.date.localeCompare(b.date)); }
+
+function waterStatus(){
+  const ev = lastOf('water'); if (!ev) return null;
+  const last = parse(ev.date), t = today(), iv = interval();
+  const next = addDays(last, iv), left = diffDays(t, next), elapsed = diffDays(last, t);
+  const kind = left > 2 ? 'ok' : left > 0 ? 'soon' : left === 0 ? 'today' : 'late';
+  return {last, next, left, elapsed, iv, kind, frac: Math.min(1, Math.max(0, elapsed / iv))};
+}
+function fertStatus(){
+  if (!isGrowing()) return {value:'En pause', hint:'reprise en ' + MONTHS[state.settings.growStart - 1]};
+  const ev = lastOf('fert');
+  if (!ev) return {value:'À faire', hint:'une fois par mois'};
+  const left = diffDays(today(), addDays(parse(ev.date), state.settings.fertInterval));
+  if (left <= 0) return {value:'À faire', hint:'dernier : ' + fmtDay(parse(ev.date))};
+  return {value:'Dans ' + plural(left, 'jour'), hint:'dernier : ' + fmtDay(parse(ev.date))};
+}
+
+const MSG = {
+  none:   ["Salut, c'est Mio. Dis-moi quand tu m'as arrosé la dernière fois, et je m'occupe du reste."],
+  late:   ["J'ai un peu soif. Pas de panique, je garde de l'eau dans mon tronc. Touche ma terre : si elle est sèche, à boire !",
+           "Tu m'as un peu oublié… je ne t'en veux pas. Un verre d'eau et on est quittes."],
+  today:  ["C'est le grand jour ! Arrose-moi doucement, jusqu'à ce que l'eau arrive dans la coupelle.",
+           "Jour d'arrosage. Vérifie juste que ma terre est bien sèche en surface avant."],
+  soon:   ["Encore {n}, et j'aurai soif. Rien à faire pour l'instant.",
+           "Bientôt l'arrosage. D'ici là, profite de ta journée."],
+  restOk: ["Je me repose pour l'hiver. Peu d'eau, pas d'engrais, juste de la lumière.",
+           "Mode hibernation. Je reviens en force au printemps, promis.",
+           "Tu as vu comme j'ai grandi ? Maintenant je fais le plein d'énergie, tranquille.",
+           "Le chauffage, très peu pour moi. Garde-moi loin des radiateurs, s'il te plaît."],
+  growOk: ["Je pousse, je pousse ! Un peu de lumière et je suis heureux.",
+           "Belle saison. Tourne mon pot d'un quart de tour de temps en temps, pour que je pousse droit."]
+};
+function mioSays(ws){
+  let list;
+  if (!ws) list = MSG.none;
+  else if (ws.kind === 'late') list = MSG.late;
+  else if (ws.kind === 'today') list = MSG.today;
+  else if (ws.kind === 'soon') list = MSG.soon;
+  else list = isGrowing() ? MSG.growOk : MSG.restOk;
+  const day = Math.floor(today() / 864e5);
+  return list[day % list.length].replace('{n}', ws ? plural(ws.left, 'jour') : '');
+}
+function seasonTip(){
+  const m = today().getMonth() + 1;
+  if ([11, 12, 1, 2].includes(m)) return "Le chauffage est allumé : garde Mio à au moins un mètre des radiateurs, l'air sec lui brunit le bout des feuilles. Laisse la lampe horticole 10 à 12 heures par jour.";
+  if (m === 3) return "Le printemps arrive. C'est bientôt le moment de reprendre l'engrais, et de penser à une taille si Mio approche du plafond.";
+  if (m === 4 || m === 5) return "Pleine reprise : engrais une fois par mois, arrosages plus rapprochés. Tourne le pot d'un quart de tour chaque semaine.";
+  if (m >= 6 && m <= 8) return "Attention aux coups de chaud, la canicule l'a déjà éprouvé. Éloigne-le un peu de la vitre aux heures chaudes et vérifie la terre plus souvent.";
+  return "Mio ralentit pour l'automne : espace les arrosages et arrête l'engrais jusqu'au printemps.";
+}
+
+/* ---------- rendu : aujourd'hui ---------- */
+function renderToday(){
+  const ws = waterStatus(); const s = state.settings; const growing = isGrowing();
+  let hero;
+  if (!ws) {
+    hero = `<div class="card first">
+      <p class="eyebrow">Pour commencer</p>
+      <h2>Quand as-tu arrosé Mio pour la dernière fois ?</h2>
+      <p class="muted small">Une date approximative suffit. Ensuite, l'appli fait le calcul pour toi.</p>
+      <div class="row">
+        <input type="date" id="firstDate" max="${iso(today())}" value="${iso(today())}" aria-label="Date du dernier arrosage">
+        <button class="btn primary" id="firstSave">Enregistrer</button>
+      </div></div>`;
+  } else {
+    const C = 2 * Math.PI * 52, dash = (C * ws.frac).toFixed(1);
+    let num, unit, title;
+    if (ws.kind === 'late') { num = Math.abs(ws.left); unit = Math.abs(ws.left) > 1 ? 'jours de retard' : 'jour de retard'; title = 'Mio a soif'; }
+    else if (ws.kind === 'today') { num = '💧'; unit = "aujourd'hui"; title = "C'est le jour de l'arrosage"; }
+    else { num = ws.left; unit = ws.left > 1 ? 'jours' : 'jour'; title = 'Prochain arrosage dans ' + plural(ws.left, 'jour'); }
+    hero = `<div class="card hero k-${ws.kind}">
+      <div class="ring" aria-hidden="true">
+        <svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="52" fill="none" stroke="var(--surface-2)" stroke-width="10"/>
+        <circle cx="62" cy="62" r="52" fill="none" stroke="var(--k)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${dash} ${C.toFixed(1)}"/></svg>
+        <div class="center"><div><div class="num">${num}</div><div class="unit">${unit}</div></div></div>
+      </div>
+      <div class="hero-text">
+        <p class="eyebrow">Arrosage</p>
+        <h2>${title}</h2>
+        <p class="muted">Dernier arrosage : ${fmtDay(ws.last)}${ws.elapsed > 0 ? ' (il y a ' + plural(ws.elapsed, 'jour') + ')' : " (aujourd'hui)"}</p>
+        <p class="muted">${ws.kind === 'late' || ws.kind === 'today' ? 'Prévu le ' : 'Prévu le '}${fmtWeekday(ws.next)}</p>
+      </div></div>`;
+  }
+
+  const m = measures(); const lastM = m[m.length - 1]; const firstM = m[0];
+  const since = parse(state.plant.since);
+  const fs = fertStatus();
+
+  $('#tab-today').innerHTML = `
+    ${hero}
+    <div class="bubble"><span class="who">Mio</span><p>${esc(mioSays(ws))}</p></div>
+    <div class="card" style="padding:16px">
+      <button class="btn water big" id="btnWater">💧 J'ai arrosé Mio aujourd'hui</button>
+      <div class="links">
+        <button class="link" id="btnWaterOther">Noter une autre date</button>
+        ${ws ? '<button class="link" id="btnIcs">📅 Mettre un rappel dans mon agenda</button>' : ''}
+      </div>
+      <div class="tip"><strong>Avant d'arroser :</strong> enfonce ton doigt dans la terre. Si elle est encore humide à 3 cm, attends 2 ou 3 jours. <strong>Après :</strong> vide la coupelle s'il reste de l'eau au bout de 30 minutes.</div>
+    </div>
+    <div class="grid2">
+      <div class="stat"><div class="label">Taille</div><div class="value">${lastM ? lastM.value + ' cm' : '?'}</div><div class="hint">${lastM && firstM && lastM !== firstM ? '+' + (lastM.value - firstM.value) + ' cm depuis son arrivée' : 'mesure-le de temps en temps'}</div></div>
+      <div class="stat"><div class="label">Chez toi depuis</div><div class="value">${fmtDuration(monthsBetween(since, today()))}</div><div class="hint">arrivé en ${MONTHS[since.getMonth()]} ${since.getFullYear()}</div></div>
+      <div class="stat"><div class="label">Engrais</div><div class="value">${fs.value}</div><div class="hint">${fs.hint}</div></div>
+      <div class="stat"><div class="label">Saison</div><div class="value">${growing ? 'Croissance' : 'Repos'}</div><div class="hint">arrosage tous les ${growing ? s.growInterval : s.restInterval} jours</div></div>
+    </div>
+    <div class="section-title">Noter quelque chose</div>
+    <div class="actions">
+      <button class="action" data-act="fert"><span class="e">🌱</span>Engrais</button>
+      <button class="action" data-act="measure"><span class="e">📏</span>Mesure</button>
+      <button class="action" data-act="photo"><span class="e">📷</span>Photo</button>
+      <button class="action" data-act="note"><span class="e">📝</span>Note</button>
+      <button class="action" data-act="repot"><span class="e">🪴</span>Rempotage</button>
+      <button class="action" data-act="stress"><span class="e">🌡️</span>Souci</button>
+    </div>
+    <div class="card season"><p class="eyebrow">Conseil de saison</p><p style="margin:0">${esc(seasonTip())}</p></div>`;
+
+  const fsBtn = $('#firstSave');
+  if (fsBtn) fsBtn.onclick = () => {
+    const v = $('#firstDate').value; if (!v) return;
+    addEvent({type:'water', date: v}); toast('Parfait, Mio est à jour 🌿');
+  };
+  $('#btnWater').onclick = waterToday;
+  $('#btnWaterOther').onclick = () => openAction('water');
+  const ics = $('#btnIcs'); if (ics) ics.onclick = downloadIcs;
+  document.querySelectorAll('#tab-today [data-act]').forEach(b => b.onclick = () => openAction(b.dataset.act));
+}
+
+/* ---------- rendu : journal ---------- */
+function chartSvg(){
+  const byDate = new Map(); measures().forEach(x => byDate.set(x.date, x));
+  const m = Array.from(byDate.values());
+  if (m.length < 2) return '<p class="muted small">Mesure Mio de temps en temps pour voir sa courbe se dessiner.</p>';
+  const W = 320, H = 160, L = 14, R = 14, T = 26, B = 26;
+  const t0 = parse(m[0].date).getTime(), t1 = parse(m[m.length - 1].date).getTime();
+  const maxV = Math.max.apply(null, m.map(x => x.value)) * 1.12;
+  const X = t => L + (t1 === t0 ? 0.5 : (t - t0) / (t1 - t0)) * (W - L - R);
+  const Y = v => T + (1 - v / maxV) * (H - T - B);
+  const pts = m.map(x => [X(parse(x.date).getTime()), Y(x.value), x]);
+  const line = pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const area = `M${pts[0][0].toFixed(1)},${(H - B)} L` + line.replace(/ /g, ' L') + ` L${pts[pts.length - 1][0].toFixed(1)},${H - B} Z`;
+  const showAll = pts.length <= 6;
+  const lbl = d => parse(d).toLocaleDateString('fr-FR', {month:'short', year:'2-digit'});
+  let marks = '';
+  pts.forEach((p, i) => {
+    const edge = i === 0 || i === pts.length - 1;
+    const anchor = i === 0 ? 'start' : i === pts.length - 1 ? 'end' : 'middle';
+    marks += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.5" fill="var(--surface)" stroke="var(--leaf)" stroke-width="2.5"/>`;
+    if (showAll || edge) {
+      marks += `<text x="${p[0].toFixed(1)}" y="${(p[1] - 10).toFixed(1)}" text-anchor="${anchor}" font-size="12" font-weight="600" fill="var(--ink)">${p[2].value} cm</text>`;
+      marks += `<text x="${p[0].toFixed(1)}" y="${H - 6}" text-anchor="${anchor}" font-size="11" fill="var(--muted)">${lbl(p[2].date)}</text>`;
+    }
+  });
+  const first = m[0], last = m[m.length - 1];
+  const months = Math.max(1, monthsBetween(parse(first.date), parse(last.date)));
+  const gain = last.value - first.value;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Courbe de croissance de Mio">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--leaf)" stop-opacity=".28"/><stop offset="1" stop-color="var(--leaf)" stop-opacity="0"/></linearGradient></defs>
+      <line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" stroke="var(--line)"/>
+      <path d="${area}" fill="url(#g)"/>
+      <polyline points="${line}" fill="none" stroke="var(--leaf)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      ${marks}</svg>
+    <p class="muted small" style="margin:8px 0 0">${gain >= 0 ? '+' : ''}${gain} cm en ${fmtDuration(months)}, soit environ ${Math.round(gain / months)} cm par mois.</p>`;
+}
+
+function evDate(e){ return e.approxLabel ? '≈ ' + e.approxLabel : fmtDay(parse(e.date)); }
+function renderJournal(){
+  const list = sorted();
+  const items = list.map(e => {
+    const t = TYPES[e.type] || TYPES.note;
+    const val = e.type === 'measure' && e.value ? `<div class="x"><strong>${e.value} cm</strong></div>` : '';
+    const thumb = e.type === 'photo' && e.photoId ? `<img class="thumb" data-photo="${esc(e.photoId)}" alt="Photo de Mio">` : '';
+    return `<li class="ev">
+      <div class="ico" style="background:${t.bg}">${t.icon}</div>
+      <div class="body"><div class="t">${t.label}</div><div class="d">${esc(evDate(e))}</div>${val}${e.text ? `<div class="x">${esc(e.text)}</div>` : ''}${thumb}</div>
+      <button class="del" data-del="${esc(e.id)}" aria-label="Supprimer">×</button></li>`;
+  }).join('');
+  $('#tab-journal').innerHTML = `
+    <div class="card chart"><p class="eyebrow">Croissance</p><h3>De ${measures()[0] ? measures()[0].value : '?'} cm à ${measures().length ? measures()[measures().length - 1].value : '?'} cm</h3>${chartSvg()}</div>
+    <div class="card"><p class="eyebrow">Toute son histoire</p><h3>${plural(list.length, 'moment')}</h3><ul class="timeline">${items}</ul></div>`;
+  document.querySelectorAll('#tab-journal [data-del]').forEach(b => b.onclick = () => removeEvent(b.dataset.del));
+  document.querySelectorAll('#tab-journal img[data-photo]').forEach(async img => {
+    const p = await getPhoto(img.dataset.photo);
+    if (p) { img.src = p.data; img.onclick = () => openLightbox(p); } else img.remove();
+  });
+}
+
+/* ---------- rendu : photos ---------- */
+async function renderPhotos(){
+  const photos = (await allPhotos()).sort((a, b) => b.date.localeCompare(a.date));
+  const grid = photos.length
+    ? `<div class="pgrid">${photos.map(p => `<button class="ph" data-ph="${esc(p.id)}"><img src="${p.data}" alt="Mio le ${esc(fmtDay(parse(p.date)))}"><span>${esc(parse(p.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'2-digit'}))}</span></button>`).join('')}</div>`
+    : `<div class="empty"><div class="e">📷</div><p>Pas encore de photo.<br>Commence par une photo de Mio aujourd'hui : dans un an, tu seras contente de l'avoir.</p></div>`;
+  $('#tab-photos').innerHTML = `
+    <div class="card">
+      <p class="eyebrow">Album</p><h3>Mio en images</h3>
+      <p class="muted small" style="margin-top:0">Tu peux ajouter plusieurs photos d'un coup : chacune garde sa date d'origine.</p>
+      <button class="btn primary big" id="btnAddPhoto" style="margin-bottom:16px">📷 Ajouter des photos</button>
+      ${grid}
+    </div>`;
+  $('#btnAddPhoto').onclick = () => $('#photoInput').click();
+  const byId = new Map(photos.map(p => [p.id, p]));
+  document.querySelectorAll('#tab-photos [data-ph]').forEach(b => b.onclick = () => openLightbox(byId.get(b.dataset.ph)));
+}
+
+function renderHeader(){
+  const since = parse(state.plant.since);
+  $('#sub').textContent = state.plant.species + ' · chez toi depuis ' + fmtDuration(monthsBetween(since, today()));
+  const m = measures(), h = m.length ? m[m.length - 1].value : null;
+  const ws = waterStatus();
+  const mood = !ws ? '🌿 Nouveau ici' : ws.kind === 'late' ? '🥤 A soif' : ws.kind === 'today' ? '💧 Jour d’arrosage' : isGrowing() ? '☀️ En pleine forme' : '😴 En repos';
+  $('#chips').innerHTML = (h ? `<span class="chip">📏 ${h >= 100 ? (h / 100).toFixed(2).replace('.', ',') + ' m' : h + ' cm'}</span>` : '') + `<span class="chip sun">${mood}</span>`;
+  const img = $('#avatarImg'), leaf = $('#avatarLeaf');
+  if (state.plant.avatar) { img.src = state.plant.avatar; img.hidden = false; leaf.style.display = 'none'; }
+  else { img.hidden = true; img.removeAttribute('src'); leaf.style.display = ''; }
+}
+
+/* photo de profil */
+function cropSquare(src, size){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => {
+      const s = Math.min(img.width, img.height), c = document.createElement('canvas'); c.width = c.height = size;
+      c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+      res(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => rej(new Error('image illisible'));
+    img.src = src;
+  });
+}
+async function setAvatar(src){
+  try { state.plant.avatar = await cropSquare(src, 480); save(); renderHeader(); toast('Nouvelle photo de profil pour Mio ✨'); }
+  catch(e){ toast("Je n'arrive pas à lire cette image."); }
+}
+async function openAvatar(){
+  const photos = (await allPhotos()).sort((a, b) => b.date.localeCompare(a.date));
+  const body = $('#sheetBody');
+  body.innerHTML = `<h3>✨ Photo de profil de Mio</h3>
+    <p class="muted small" style="margin-top:0">Prends une nouvelle photo, ou choisis-en une dans son album. Elle sera recadrée en rond, centrée.</p>
+    <button class="btn primary big" id="avNew">📷 Choisir une photo</button>
+    ${photos.length ? `<p class="eyebrow" style="margin-top:18px">Depuis son album</p><div class="pick">${photos.map(p => `<button data-av="${esc(p.id)}" aria-label="Utiliser cette photo"><img src="${p.data}" alt=""></button>`).join('')}</div>` : ''}
+    <div class="sheet-actions" style="margin-top:18px">${state.plant.avatar ? '<button class="btn ghost" id="avDel">Retirer la photo</button>' : ''}<button class="btn ghost" data-close>Fermer</button></div>`;
+  const wrap = $('#sheet'); wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open'));
+  body.querySelector('[data-close]').onclick = closeSheet;
+  $('#avNew').onclick = () => $('#avatarInput').click();
+  const del = $('#avDel'); if (del) del.onclick = () => { delete state.plant.avatar; save(); renderHeader(); closeSheet(); };
+  const byId = new Map(photos.map(p => [p.id, p]));
+  body.querySelectorAll('[data-av]').forEach(b => b.onclick = async () => { await setAvatar(byId.get(b.dataset.av).data); closeSheet(); });
+}
+$('#avatarBtn').onclick = openAvatar;
+$('#avatarInput').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+  const url = URL.createObjectURL(f); await setAvatar(url); URL.revokeObjectURL(url); closeSheet();
+});
+function renderAll(){ renderHeader(); renderToday(); renderJournal(); if ($('#tab-photos').classList.contains('active')) renderPhotos(); }
+
+/* ---------- actions ---------- */
+function addEvent(ev){ ev.id = uid(); ev.created = Date.now(); state.events.push(ev); save(); renderAll(); return ev.id; }
+function removeEvent(id, silent){
+  const ev = state.events.find(e => e.id === id); if (!ev) return;
+  if (!silent && !confirm('Supprimer « ' + (TYPES[ev.type] || TYPES.note).label + ' » du ' + evDate(ev) + ' ?')) return;
+  state.events = state.events.filter(e => e.id !== id);
+  if (ev.type === 'photo' && ev.photoId) delPhoto(ev.photoId).then(renderAll);
+  save(); renderAll();
+}
+function waterToday(){
+  const last = lastOf('water');
+  if (last && last.date === iso(today())) { toast("C'est déjà noté pour aujourd'hui 💧"); return; }
+  const id = addEvent({type:'water', date: iso(today())});
+  toast('Arrosage noté. Merci pour Mio 💧', () => removeEvent(id, true));
+}
+
+function fieldHtml(f){
+  const id = 'f_' + f.name;
+  if (f.type === 'date') return `<label for="${id}">${esc(f.label)}<input type="date" id="${id}" name="${f.name}" max="${iso(today())}" value="${esc(f.value || iso(today()))}" required></label>`;
+  if (f.type === 'number') return `<label for="${id}">${esc(f.label)}<span class="suffix"><input type="number" id="${id}" name="${f.name}" inputmode="decimal" min="${f.min || 0}" max="${f.max || 9999}" step="${f.step || 1}" value="${esc(f.value == null ? '' : f.value)}" ${f.required ? 'required' : ''}><span>${esc(f.suffix || '')}</span></span></label>`;
+  if (f.type === 'select') return `<label for="${id}">${esc(f.label)}<select id="${id}" name="${f.name}">${f.options.map(o => `<option value="${o[0]}" ${String(o[0]) === String(f.value) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select></label>`;
+  return `<label for="${id}">${esc(f.label)}<textarea id="${id}" name="${f.name}" placeholder="${esc(f.placeholder || '')}" ${f.required ? 'required' : ''}>${esc(f.value || '')}</textarea></label>`;
+}
+function openForm(o){
+  const body = $('#sheetBody');
+  body.innerHTML = `<h3>${esc(o.title)}</h3>${o.intro ? `<p class="muted small" style="margin-top:0">${esc(o.intro)}</p>` : ''}
+    <form id="sheetForm">${o.fields.map(fieldHtml).join('')}
+    <div class="sheet-actions"><button type="button" class="btn ghost" data-close>Annuler</button><button type="submit" class="btn primary">${esc(o.submit || 'Enregistrer')}</button></div></form>${o.extra || ''}`;
+  const wrap = $('#sheet'); wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open'));
+  body.querySelector('[data-close]').onclick = closeSheet;
+  $('#sheetForm').onsubmit = ev => {
+    ev.preventDefault();
+    const vals = {}; new FormData(ev.target).forEach((v, k) => vals[k] = typeof v === 'string' ? v.trim() : v);
+    if (o.onSubmit(vals) !== false) closeSheet();
+  };
+  if (o.after) o.after(body);
+}
+function closeSheet(){ const w = $('#sheet'); w.classList.remove('open'); setTimeout(() => { w.hidden = true; $('#sheetBody').innerHTML = ''; }, 200); }
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (!$('#sheet').hidden) closeSheet(); if (!$('#lightbox').hidden) closeLightbox(); } });
+
+function openAction(kind){
+  const date = {type:'date', name:'date', label:'Date'};
+  if (kind === 'photo') { $('#photoInput').click(); return; }
+  const forms = {
+    water:   {title:'💧 Arrosage', intro:"Pour noter un arrosage fait un autre jour.", fields:[date]},
+    fert:    {title:'🌱 Engrais', fields:[date, {type:'text', name:'text', label:'Détail (facultatif)', placeholder:'Marque, dose…'}]},
+    measure: {title:'📏 Nouvelle mesure', intro:'Du bord du pot jusqu’en haut de la plus haute feuille.', fields:[date, {type:'number', name:'value', label:'Hauteur', suffix:'cm', min:1, max:500, required:true}, {type:'text', name:'text', label:'Note (facultatif)'}]},
+    note:    {title:'📝 Note', fields:[date, {type:'text', name:'text', label:'Ce que tu veux retenir', placeholder:'Nouvelle feuille, changement de place…', required:true}]},
+    repot:   {title:'🪴 Rempotage', fields:[date, {type:'text', name:'text', label:'Détails', placeholder:'Taille du pot, terreau…'}]},
+    stress:  {title:'🌡️ Un souci', intro:'Feuilles jaunes, bouts bruns, coup de chaud… Note ce que tu observes pour suivre son évolution.', fields:[date, {type:'text', name:'text', label:'Ce que tu observes', required:true}]}
+  };
+  const f = forms[kind]; if (!f) return;
+  openForm(Object.assign({}, f, {onSubmit: v => {
+    const ev = {type: kind, date: v.date || iso(today())};
+    if (v.text) ev.text = v.text;
+    if (kind === 'measure') { const n = Math.round(parseFloat(String(v.value).replace(',', '.'))); if (!n) return false; ev.value = n; }
+    addEvent(ev); toast('C’est noté 🌿');
+  }}));
+}
+
+/* photos : ajout */
+$('#photoInput').addEventListener('change', async e => {
+  const files = Array.from(e.target.files || []); e.target.value = '';
+  if (!files.length) return;
+  const t = today();
+  const dateOf = f => { const d = f.lastModified ? new Date(f.lastModified) : new Date(); const dd = new Date(d.getFullYear(), d.getMonth(), d.getDate()); return iso(dd > t ? t : dd); };
+  if (files.length === 1) {
+    let data; try { data = await compress(files[0]); } catch(err){ toast("Je n'arrive pas à lire cette image."); return; }
+    openForm({title:'📷 Nouvelle photo', fields:[{type:'date', name:'date', label:'Date de la photo', value: dateOf(files[0])}, {type:'text', name:'text', label:'Légende (facultatif)'}],
+      extra:`<img src="${data}" alt="" style="width:100%;border-radius:14px;margin-top:14px">`,
+      onSubmit: v => { addPhoto(data, v.date || iso(t), v.text); }});
+    return;
+  }
+  let n = 0;
+  for (const f of files) { try { const data = await compress(f); await addPhoto(data, dateOf(f), ''); n++; } catch(err){} }
+  toast(plural(n, 'photo') + ' ajoutée' + (n > 1 ? 's' : '') + ' 📷');
+});
+async function addPhoto(data, date, text){
+  const id = uid(); await putPhoto({id, date, data, text: text || ''});
+  const ev = {type:'photo', date, photoId:id}; if (text) ev.text = text;
+  addEvent(ev); renderPhotos();
+}
+
+/* lightbox */
+let lbCurrent = null;
+function openLightbox(p){ if (!p) return; lbCurrent = p; $('#lbImg').src = p.data; $('#lbCap').textContent = fmtDay(parse(p.date)) + (p.text ? ' · ' + p.text : ''); $('#lightbox').hidden = false; }
+function closeLightbox(){ $('#lightbox').hidden = true; $('#lbImg').removeAttribute('src'); lbCurrent = null; }
+$('#lbClose').onclick = closeLightbox;
+$('#lbAvatar').onclick = async () => { if (!lbCurrent) return; const d = lbCurrent.data; closeLightbox(); await setAvatar(d); };
+$('#lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
+$('#lbDel').onclick = async () => {
+  if (!lbCurrent || !confirm('Supprimer cette photo ?')) return;
+  const id = lbCurrent.id; await delPhoto(id);
+  state.events = state.events.filter(e => !(e.type === 'photo' && e.photoId === id)); save();
+  closeLightbox(); renderAll(); renderPhotos();
+};
+
+/* rappel agenda (.ics) */
+function download(blob, name){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+function downloadIcs(){
+  const ws = waterStatus(); if (!ws) return;
+  const d = ws.next < today() ? today() : ws.next;
+  const ymd = x => x.getFullYear() + pad(x.getMonth() + 1) + pad(x.getDate());
+  const now = new Date(); const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mio//FR','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    'UID:mio-' + ymd(d) + '-' + uid() + '@mio', 'DTSTAMP:' + stamp,
+    'DTSTART;VALUE=DATE:' + ymd(d), 'DTEND;VALUE=DATE:' + ymd(addDays(d, 1)),
+    'SUMMARY:💧 Arroser Mio',
+    'DESCRIPTION:Vérifie la terre à 3 cm avant. Vide la coupelle après. Puis note l\'arrosage dans l\'appli Mio.',
+    'BEGIN:VALARM','TRIGGER:PT9H','ACTION:DISPLAY','DESCRIPTION:Arroser Mio','END:VALARM',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  download(new Blob([ics], {type:'text/calendar'}), 'arroser-mio-' + iso(d) + '.ics');
+  toast("Ouvre le fichier téléchargé pour l'ajouter à ton agenda 📅");
+}
+
+/* réglages, sauvegarde */
+function openSettings(){
+  const s = state.settings;
+  const monthOpts = MONTHS.map((m, i) => [i + 1, m]);
+  openForm({
+    title:'⚙️ Réglages', intro:'Le rythme de Mio, et la sauvegarde de ses données.',
+    fields:[
+      {type:'number', name:'restInterval', label:'Arrosage en période de repos, tous les', suffix:'jours', min:3, max:60, value:s.restInterval, required:true},
+      {type:'number', name:'growInterval', label:'Arrosage en période de croissance, tous les', suffix:'jours', min:2, max:60, value:s.growInterval, required:true},
+      {type:'number', name:'fertInterval', label:'Engrais pendant la croissance, tous les', suffix:'jours', min:7, max:90, value:s.fertInterval, required:true},
+      {type:'select', name:'growStart', label:'La croissance commence en', options:monthOpts, value:s.growStart},
+      {type:'select', name:'growEnd', label:'…et se termine fin', options:monthOpts, value:s.growEnd}
+    ],
+    extra:`<div class="stack">
+      <p class="muted small" style="margin:0">Le suivi de Mio est rangé dans ce navigateur, sur cet appareil. Fais une sauvegarde de temps en temps, elle contient aussi les photos.</p>
+      <button class="btn ghost" id="btnExport">⬇️ Télécharger une sauvegarde</button>
+      <button class="btn ghost" id="btnImport">⬆️ Restaurer une sauvegarde</button>
+      <button class="btn danger" id="btnReset">Tout effacer</button></div>`,
+    after: () => {
+      $('#btnExport').onclick = exportData;
+      $('#btnImport').onclick = () => $('#importInput').click();
+      $('#btnReset').onclick = resetAll;
+    },
+    onSubmit: v => {
+      ['restInterval','growInterval','fertInterval','growStart','growEnd'].forEach(k => { const n = parseInt(v[k], 10); if (n > 0) s[k] = n; });
+      save(); renderAll(); toast('Réglages enregistrés');
+    }
+  });
+}
+async function exportData(){
+  const photos = await allPhotos();
+  const blob = new Blob([JSON.stringify({app:'mio', exported:new Date().toISOString(), state, photos})], {type:'application/json'});
+  download(blob, 'mio-sauvegarde-' + iso(today()) + '.json'); toast('Sauvegarde téléchargée');
+}
+$('#importInput').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    if (data.app !== 'mio' || !data.state || !Array.isArray(data.state.events)) throw new Error('format');
+    if (!confirm('Remplacer le suivi actuel par cette sauvegarde ?')) return;
+    state = data.state; state.settings = Object.assign(defaults().settings, state.settings || {}); state.plant = Object.assign(defaults().plant, state.plant || {});
+    save(); await clearPhotos(); for (const p of (data.photos || [])) await putPhoto(p);
+    closeSheet(); renderAll(); renderPhotos(); toast('Sauvegarde restaurée 🌿');
+  } catch(err){ toast("Ce fichier n'est pas une sauvegarde de Mio."); }
+});
+async function resetAll(){
+  if (!confirm('Tout effacer et repartir de zéro ? Pense à télécharger une sauvegarde avant.')) return;
+  state = defaults(); save(); await clearPhotos(); closeSheet(); renderAll(); renderPhotos(); toast('Tout est remis à zéro');
+}
+$('#btnSettings').onclick = openSettings;
+
+/* toast */
+let toastTimer = null;
+function toast(msg, undo){
+  const t = $('#toast'); t.innerHTML = ''; const span = document.createElement('span'); span.textContent = msg; t.appendChild(span);
+  if (undo) { const b = document.createElement('button'); b.textContent = 'Annuler'; b.onclick = () => { undo(); t.classList.remove('show'); }; t.appendChild(b); }
+  t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), undo ? 5000 : 2800);
+}
+
+/* onglets */
+document.querySelectorAll('.nav').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.nav').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.id === 'tab-' + b.dataset.tab));
+  if (b.dataset.tab === 'photos') renderPhotos();
+  window.scrollTo(0, 0);
+});
+
+/* démarrage */
+if (!canStore) {
+  const bn = $('#banner'); bn.hidden = false;
+  bn.textContent = "⚠️ Ici, Mio ne peut rien retenir. Ouvre le fichier Mio.html directement depuis ton dossier (double-clic) pour que ton suivi soit sauvegardé.";
+}
+save();
+renderAll();
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+})();
+</script>
+</body>
+</html>
