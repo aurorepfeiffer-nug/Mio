@@ -341,7 +341,7 @@ function defaults(){
   return {
     version: 1,
     plant: {name:'Mio', species:'Pachira aquatica', since:'2025-09-15'},
-    settings: {restInterval:21, growInterval:10, fertInterval:30, growStart:4, growEnd:9},
+    settings: {restInterval:21, growInterval:10, fertInterval:30, growStart:4, growEnd:9, askCal:1},
     events: [
       e('arrival', '2025-09-15', {approxLabel:'septembre 2025', text:"Acheté dans son pot d'origine."}),
       e('measure', '2025-09-15', {approxLabel:'septembre 2025', value:40, text:'Taille à son arrivée, environ.'}),
@@ -516,7 +516,7 @@ function renderToday(){
       <button class="btn water big" id="btnWater">💧 J'ai arrosé Mio aujourd'hui</button>
       <div class="links">
         <button class="link" id="btnWaterOther">Noter une autre date</button>
-        ${ws ? '<button class="link" id="btnIcs">📅 Mettre un rappel dans mon agenda</button>' : ''}
+        ${ws ? '<button class="link" id="btnIcs">📅 Mettre le prochain bain dans mon agenda</button>' : ''}
       </div>
       <div class="tip"><strong>Avant le bain :</strong> enfonce ton doigt dans la terre. Si elle est encore humide à 5 cm, attends 2 ou 3 jours. <strong>Le bain :</strong> 15 minutes de trempage, puis 2 à 3 heures d'égouttage sur la grille.</div>
     </div>
@@ -544,7 +544,7 @@ function renderToday(){
   };
   $('#btnWater').onclick = waterToday;
   $('#btnWaterOther').onclick = () => openAction('water');
-  const ics = $('#btnIcs'); if (ics) ics.onclick = downloadIcs;
+  const ics = $('#btnIcs'); if (ics) ics.onclick = () => openCalendar(false);
   document.querySelectorAll('#tab-today [data-act]').forEach(b => b.onclick = () => openAction(b.dataset.act));
 }
 
@@ -662,7 +662,7 @@ async function openAvatar(){
     <button class="btn primary big" id="avNew">📷 Choisir une photo</button>
     ${photos.length ? `<p class="eyebrow" style="margin-top:18px">Depuis son album</p><div class="pick">${photos.map(p => `<button data-av="${esc(p.id)}" aria-label="Utiliser cette photo"><img src="${p.data}" alt=""></button>`).join('')}</div>` : ''}
     <div class="sheet-actions" style="margin-top:18px">${state.plant.avatar ? '<button class="btn ghost" id="avDel">Retirer la photo</button>' : ''}<button class="btn ghost" data-close>Fermer</button></div>`;
-  const wrap = $('#sheet'); wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open'));
+  showSheet();
   body.querySelector('[data-close]').onclick = closeSheet;
   $('#avNew').onclick = () => $('#avatarInput').click();
   const del = $('#avDel'); if (del) del.onclick = () => { delete state.plant.avatar; save(); renderHeader(); closeSheet(); };
@@ -689,7 +689,33 @@ function waterToday(){
   const last = lastOf('water');
   if (last && last.date === iso(today())) { toast("C'est déjà noté pour aujourd'hui 💧"); return; }
   const id = addEvent({type:'water', date: iso(today())});
-  toast('Arrosage noté. Merci pour Mio 💧', () => removeEvent(id, true));
+  toast('Arrosage noté. Merci pour Mio 💧', () => { removeEvent(id, true); closeSheet(); });
+  if (state.settings.askCal) openCalendar(true);
+}
+
+/* rappel dans l'agenda */
+const APP_URL = 'https://aurorepfeiffer-nug.github.io/Mio/';
+const CAL_DETAILS = "Avant : vérifie la terre à 5 cm. Bassinage 15 min, puis égouttage 2 à 3 h sur la grille.\nEnsuite, note-le dans Mio : " + APP_URL;
+const ymd = x => x.getFullYear() + pad(x.getMonth() + 1) + pad(x.getDate());
+function nextBathDate(){ const ws = waterStatus(); if (!ws) return null; return ws.next < today() ? today() : ws.next; }
+function gcalUrl(d){
+  const p = new URLSearchParams({action:'TEMPLATE', text:'💧 Bain de Mio', dates: ymd(d) + 'T090000/' + ymd(d) + 'T093000', ctz:'Europe/Paris', details: CAL_DETAILS});
+  return 'https://calendar.google.com/calendar/render?' + p.toString();
+}
+function openCalendar(fromWater){
+  const d = nextBathDate(); if (!d) return;
+  const body = $('#sheetBody');
+  body.innerHTML = `<h3>📅 ${fromWater ? 'Bien joué ! ' : ''}Prochain bain : ${esc(fmtWeekday(d))}</h3>
+    <p class="muted small" style="margin-top:0">Ajoute-le à ton agenda, à 9 h : ton téléphone te préviendra le jour venu. Il te suffira d'enregistrer l'événement.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+      <a class="btn primary big" id="calG" href="${esc(gcalUrl(d))}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">Google Agenda</a>
+      <button class="btn ghost" id="calI">Agenda de l'iPhone</button>
+      <button class="btn ghost" data-close>${fromWater ? 'Non merci' : 'Fermer'}</button>
+    </div>`;
+  showSheet();
+  body.querySelector('[data-close]').onclick = closeSheet;
+  $('#calG').addEventListener('click', () => setTimeout(closeSheet, 400));
+  $('#calI').onclick = () => { downloadIcs(); closeSheet(); };
 }
 
 function fieldHtml(f){
@@ -704,7 +730,7 @@ function openForm(o){
   body.innerHTML = `<h3>${esc(o.title)}</h3>${o.intro ? `<p class="muted small" style="margin-top:0">${esc(o.intro)}</p>` : ''}
     <form id="sheetForm">${o.fields.map(fieldHtml).join('')}
     <div class="sheet-actions"><button type="button" class="btn ghost" data-close>Annuler</button><button type="submit" class="btn primary">${esc(o.submit || 'Enregistrer')}</button></div></form>${o.extra || ''}`;
-  const wrap = $('#sheet'); wrap.hidden = false; requestAnimationFrame(() => wrap.classList.add('open'));
+  showSheet();
   body.querySelector('[data-close]').onclick = closeSheet;
   $('#sheetForm').onsubmit = ev => {
     ev.preventDefault();
@@ -713,7 +739,9 @@ function openForm(o){
   };
   if (o.after) o.after(body);
 }
-function closeSheet(){ const w = $('#sheet'); w.classList.remove('open'); setTimeout(() => { w.hidden = true; $('#sheetBody').innerHTML = ''; }, 200); }
+let sheetTimer = null;
+function showSheet(){ clearTimeout(sheetTimer); const w = $('#sheet'); w.hidden = false; requestAnimationFrame(() => w.classList.add('open')); }
+function closeSheet(){ const w = $('#sheet'); w.classList.remove('open'); clearTimeout(sheetTimer); sheetTimer = setTimeout(() => { w.hidden = true; $('#sheetBody').innerHTML = ''; }, 200); }
 $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (!$('#sheet').hidden) closeSheet(); if (!$('#lightbox').hidden) closeLightbox(); } });
 
@@ -734,6 +762,7 @@ function openAction(kind){
     if (v.text) ev.text = v.text;
     if (kind === 'measure') { const n = Math.round(parseFloat(String(v.value).replace(',', '.'))); if (!n) return false; ev.value = n; }
     addEvent(ev); toast('C’est noté 🌿');
+    if (kind === 'water' && state.settings.askCal) setTimeout(() => openCalendar(true), 250);
   }}));
 }
 
@@ -780,16 +809,15 @@ function download(blob, name){
   document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
 }
 function downloadIcs(){
-  const ws = waterStatus(); if (!ws) return;
-  const d = ws.next < today() ? today() : ws.next;
-  const ymd = x => x.getFullYear() + pad(x.getMonth() + 1) + pad(x.getDate());
+  const d = nextBathDate(); if (!d) return;
   const now = new Date(); const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const icsText = s => s.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
   const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mio//FR','CALSCALE:GREGORIAN','BEGIN:VEVENT',
     'UID:mio-' + ymd(d) + '-' + uid() + '@mio', 'DTSTAMP:' + stamp,
-    'DTSTART;VALUE=DATE:' + ymd(d), 'DTEND;VALUE=DATE:' + ymd(addDays(d, 1)),
-    'SUMMARY:💧 Arroser Mio',
-    'DESCRIPTION:Vérifie la terre à 5 cm avant. Bassinage 15 min\\, puis égouttage 2 à 3 h sur la grille. Note ensuite l\'arrosage dans l\'appli Mio.',
-    'BEGIN:VALARM','TRIGGER:PT9H','ACTION:DISPLAY','DESCRIPTION:Arroser Mio','END:VALARM',
+    'DTSTART:' + ymd(d) + 'T090000', 'DTEND:' + ymd(d) + 'T093000',
+    'SUMMARY:💧 Bain de Mio',
+    'DESCRIPTION:' + icsText(CAL_DETAILS),
+    'BEGIN:VALARM','TRIGGER:PT0S','ACTION:DISPLAY','DESCRIPTION:Bain de Mio','END:VALARM',
     'END:VEVENT','END:VCALENDAR'].join('\r\n');
   download(new Blob([ics], {type:'text/calendar'}), 'arroser-mio-' + iso(d) + '.ics');
   toast("Ouvre le fichier téléchargé pour l'ajouter à ton agenda 📅");
@@ -806,7 +834,8 @@ function openSettings(){
       {type:'number', name:'growInterval', label:'Arrosage en période de croissance, tous les', suffix:'jours', min:2, max:60, value:s.growInterval, required:true},
       {type:'number', name:'fertInterval', label:'Engrais pendant la croissance, tous les', suffix:'jours', min:7, max:90, value:s.fertInterval, required:true},
       {type:'select', name:'growStart', label:'La croissance commence en', options:monthOpts, value:s.growStart},
-      {type:'select', name:'growEnd', label:'…et se termine fin', options:monthOpts, value:s.growEnd}
+      {type:'select', name:'growEnd', label:'…et se termine fin', options:monthOpts, value:s.growEnd},
+      {type:'select', name:'askCal', label:'Après un arrosage, proposer de mettre le prochain bain dans l’agenda', options:[[1, 'Oui'], [0, 'Non']], value:s.askCal}
     ],
     extra:`<div class="stack">
       <p class="muted small" style="margin:0">Le suivi de Mio est rangé dans ce navigateur, sur cet appareil. Fais une sauvegarde de temps en temps, elle contient aussi les photos.</p>
@@ -820,6 +849,7 @@ function openSettings(){
     },
     onSubmit: v => {
       ['restInterval','growInterval','fertInterval','growStart','growEnd'].forEach(k => { const n = parseInt(v[k], 10); if (n > 0) s[k] = n; });
+      s.askCal = v.askCal === '0' ? 0 : 1;
       save(); renderAll(); toast('Réglages enregistrés');
     }
   });
