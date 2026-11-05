@@ -223,6 +223,7 @@ label > input,label > select,label > textarea{margin-top:6px;color:var(--ink);fo
         <ul>
           <li>Pot en terre cuite, un peu plus grand depuis le rempotage du printemps 2026. La terre cuite respire et sèche plus vite que le plastique : en été, vérifie la terre plus souvent.</li>
           <li>Billes d'argile au fond pour le drainage, et une coupelle dessous.</li>
+          <li>Arrosage par bassinage, dans la baignoire, avec une grille pour l'égouttage.</li>
           <li>Près de la fenêtre, avec une lampe horticole.</li>
         </ul>
       </div>
@@ -237,7 +238,9 @@ label > input,label > select,label > textarea{margin-top:6px;color:var(--ink);fo
         <ul>
           <li><strong>Automne et hiver :</strong> tous les 20 à 21 jours, ton rythme habituel.</li>
           <li><strong>Printemps et été :</strong> plus souvent, environ tous les 7 à 10 jours selon la chaleur.</li>
-          <li>Toujours : arrose quand les 3 premiers centimètres de terre sont secs, et vide la coupelle s'il reste de l'eau au bout de 30 minutes.</li>
+          <li><strong>Ta méthode, le bassinage :</strong> 15 minutes de trempage, puis 2 à 3 heures d'égouttage sur la grille avant de le remettre dans sa coupelle. Jamais par le haut.</li>
+          <li><strong>Le bon moment :</strong> le calendrier est un repère, le doigt décide. Enfonce-le dans la terre : si elle est encore humide à 5 cm, attends quelques jours. Par forte chaleur, vérifie plus souvent plutôt que de suivre la date.</li>
+          <li>Si les pointes des feuilles brûlent, l'eau peut être en cause (calcaire, chlore) : une eau reposée une nuit ou filtrée est plus douce.</li>
         </ul>
       </div>
       <div class="card">
@@ -246,7 +249,7 @@ label > input,label > select,label > textarea{margin-top:6px;color:var(--ink);fo
       </div>
       <div class="card">
         <h3>🌡️ Température et air</h3>
-        <p>Idéal entre 18 et 25 °C, jamais en dessous de 12 °C. Loin des radiateurs (l'air sec lui brunit le bout des feuilles) et des courants d'air froids quand tu ouvres la fenêtre en hiver.</p>
+        <p>Idéal entre 18 et 25 °C, jamais en dessous de 12 °C. Loin des radiateurs (l'air sec lui brunit le bout des feuilles) et des courants d'air froids quand tu ouvres la fenêtre en hiver. Jamais de ventilateur qui souffle directement sur lui : ses feuilles se dessèchent plus vite que ses racines ne boivent.</p>
       </div>
       <div class="card">
         <h3>🔎 Ce que ses feuilles te disent</h3>
@@ -264,7 +267,7 @@ label > input,label > select,label > textarea{margin-top:6px;color:var(--ink);fo
       <div class="card">
         <h3>📏 Sa taille</h3>
         <p>De 40 cm à 1,20 m en un peu plus d'un an, c'est une très belle croissance : tu t'en occupes bien.</p>
-        <p>S'il devient trop grand, on peut le tailler au printemps : couper le haut de la tige le fait se ramifier et devenir plus touffu. Prochain rempotage dans 2 ans environ, au printemps, ou plus tôt si des racines sortent par le trou du pot.</p>
+        <p>S'il devient trop grand, on peut le tailler au printemps : couper le haut de la tige le fait se ramifier et devenir plus touffu. Il pousse vite : en juillet 2026, des racines sortaient déjà par le trou du pot et la motte semblait tassée. Un rempotage au printemps 2027 est sûrement à prévoir. Jamais en pleine chaleur.</p>
       </div>
     </section>
   </main>
@@ -437,10 +440,10 @@ function fertStatus(){
 
 const MSG = {
   none:   ["Salut, c'est Mio. Dis-moi quand tu m'as arrosé la dernière fois, et je m'occupe du reste."],
-  late:   ["J'ai un peu soif. Pas de panique, je garde de l'eau dans mon tronc. Touche ma terre : si elle est sèche, à boire !",
+  late:   ["J'ai un peu soif. Pas de panique, je garde de l'eau dans mon tronc. Touche ma terre : si elle est sèche, au bain !",
            "Tu m'as un peu oublié… je ne t'en veux pas. Un verre d'eau et on est quittes."],
-  today:  ["C'est le grand jour ! Arrose-moi doucement, jusqu'à ce que l'eau arrive dans la coupelle.",
-           "Jour d'arrosage. Vérifie juste que ma terre est bien sèche en surface avant."],
+  today:  ["C'est le jour du bain ! Quinze minutes de trempage, et je suis le plus heureux des pachiras.",
+           "Jour de bain. Vérifie d'abord ma terre à 5 cm : si elle est encore humide, attends un peu."],
   soon:   ["Encore {n}, et j'aurai soif. Rien à faire pour l'instant.",
            "Bientôt l'arrosage. D'ici là, profite de ta journée."],
   restOk: ["Je me repose pour l'hiver. Peu d'eau, pas d'engrais, juste de la lumière.",
@@ -515,7 +518,7 @@ function renderToday(){
         <button class="link" id="btnWaterOther">Noter une autre date</button>
         ${ws ? '<button class="link" id="btnIcs">📅 Mettre un rappel dans mon agenda</button>' : ''}
       </div>
-      <div class="tip"><strong>Avant d'arroser :</strong> enfonce ton doigt dans la terre. Si elle est encore humide à 3 cm, attends 2 ou 3 jours. <strong>Après :</strong> vide la coupelle s'il reste de l'eau au bout de 30 minutes.</div>
+      <div class="tip"><strong>Avant le bain :</strong> enfonce ton doigt dans la terre. Si elle est encore humide à 5 cm, attends 2 ou 3 jours. <strong>Le bain :</strong> 15 minutes de trempage, puis 2 à 3 heures d'égouttage sur la grille.</div>
     </div>
     <div class="grid2">
       <div class="stat"><div class="label">Taille</div><div class="value">${lastM ? lastM.value + ' cm' : '?'}</div><div class="hint">${lastM && firstM && lastM !== firstM ? '+' + (lastM.value - firstM.value) + ' cm depuis son arrivée' : 'mesure-le de temps en temps'}</div></div>
@@ -785,7 +788,7 @@ function downloadIcs(){
     'UID:mio-' + ymd(d) + '-' + uid() + '@mio', 'DTSTAMP:' + stamp,
     'DTSTART;VALUE=DATE:' + ymd(d), 'DTEND;VALUE=DATE:' + ymd(addDays(d, 1)),
     'SUMMARY:💧 Arroser Mio',
-    'DESCRIPTION:Vérifie la terre à 3 cm avant. Vide la coupelle après. Puis note l\'arrosage dans l\'appli Mio.',
+    'DESCRIPTION:Vérifie la terre à 5 cm avant. Bassinage 15 min\\, puis égouttage 2 à 3 h sur la grille. Note ensuite l\'arrosage dans l\'appli Mio.',
     'BEGIN:VALARM','TRIGGER:PT9H','ACTION:DISPLAY','DESCRIPTION:Arroser Mio','END:VALARM',
     'END:VEVENT','END:VCALENDAR'].join('\r\n');
   download(new Blob([ics], {type:'text/calendar'}), 'arroser-mio-' + iso(d) + '.ics');
